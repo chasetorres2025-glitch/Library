@@ -1,0 +1,210 @@
+/* 通用页面样式 */
+.page-container {
+  padding: 0;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--spacing-large);
+}
+
+.header-content {
+  flex: 1;
+}
+
+.page-title {
+  font-size: var(--font-size-extra-large);
+  font-weight: var(--font-weight-primary);
+  color: var(--text-primary);
+  margin: 0 0 var(--spacing-small) 0;
+}
+
+.page-description {
+  color: var(--text-secondary);
+  font-size: var(--font-size-base);
+  margin: 0;
+}
+
+.header-actions {
+  flex-shrink: 0;
+  display: flex;
+  gap: var(--spacing-small);
+}
+
+.primary-button {
+  border-radius: var(--border-radius-base);
+  font-weight: var(--font-weight-primary);
+  background: linear-gradient(45deg, var(--primary-color), var(--primary-light));
+  border: none;
+}
+
+.success-button {
+  border-radius: var(--border-radius-base);
+  font-weight: var(--font-weight-primary);
+  background: linear-gradient(45deg, var(--success-color), var(--success-light));
+  border: none;
+}
+
+.warning-button {
+  border-radius: var(--border-radius-base);
+  font-weight: var(--font-weight-primary);
+  background: linear-gradient(45deg, var(--warning-color), var(--warning-light));
+  border: none;
+}
+
+.danger-button {
+  border-radius: var(--border-radius-base);
+  font-weight: var(--font-weight-primary);
+  background: linear-gradient(45deg, var(--danger-color), var(--danger-light));
+  border: none;
+}
+
+.search-card {
+  margin-bottom: var(--spacing-large);
+  border-radius: var(--border-radius-large);
+}
+
+.search-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-medium);
+}
+
+.search-input,
+.search-select {
+  width: 200px;
+}
+
+.search-actions {
+  display: flex;
+  gap: var(--spacing-small);
+}
+
+.query-button {
+  background: linear-gradient(45deg, var(--primary-color), var(--primary-light));
+  border: none;
+  font-weight: var(--font-weight-primary);
+}
+
+.reset-button {
+  border-color: var(--border-base);
+  color: var(--text-regular);
+}
+
+.table-card {
+  border-radius: var(--border-radius-large);
+  overflow: hidden;
+}
+
+.table-container {
+  margin-bottom: var(--spacing-large);
+}
+
+.data-table {
+  width: 100%;
+  border-radius: var(--border-radius-base);
+  overflow: hidden;
+}
+
+.action-buttons {
+  display: flex;
+  gap: var(--spacing-small);
+  justify-content: center;
+}
+
+.action-button {
+  border-radius: var(--border-radius-small);
+  font-weight: var(--font-weight-primary);
+}
+
+.pagination-container {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.form-dialog {
+  border-radius: var(--border-radius-large);
+  overflow: hidden;
+}
+
+.data-form {
+  padding: var(--spacing-medium) 0;
+}
+
+.dialog-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-small);
+}
+
+/* 状态标签样式 */
+.status-tag {
+  border-radius: var(--border-radius-round);
+  font-weight: var(--font-weight-primary);
+}
+
+/* 数据卡片样式 */
+.data-card {
+  border-radius: var(--border-radius-large);
+  padding: var(--spacing-large);
+  background-color: var(--bg-color);
+  box-shadow: var(--shadow-base);
+  transition: var(--transition-base);
+  cursor: pointer;
+}
+
+.data-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-light);
+}
+
+/* 空状态样式 */
+.empty-state {
+  padding: var(--spacing-huge);
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+.empty-state-icon {
+  font-size: 64px;
+  margin-bottom: var(--spacing-large);
+  opacity: 0.5;
+}
+
+.empty-state-text {
+  font-size: var(--font-size-medium);
+  margin-bottom: var(--spacing-medium);
+}
+
+.empty-state-description {
+  font-size: var(--font-size-base);
+  color: var(--text-placeholder);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .page-header {
+    flex-direction: column;
+    gap: var(--spacing-medium);
+  }
+  
+  .search-form {
+    flex-direction: column;
+  }
+  
+  .search-input,
+  .search-select {
+    width: 100%;
+  }
+  
+  .search-actions {
+    justify-content: center;
+  }
+  
+  .action-buttons {
+    flex-direction: column;
+    gap: var(--spacing-mini);
+  }
+}
