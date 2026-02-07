@@ -306,7 +306,7 @@ erDiagram
 
     book_stock {
         bigint id PK
-        bigint book_id FK UK
+        bigint book_id FK
         int total_num
         int borrow_num
         int available_num
