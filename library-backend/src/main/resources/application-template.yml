@@ -9,8 +9,8 @@ spring:
     type: com.alibaba.druid.pool.DruidDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/library_system?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
-    username: root
-    password: P@ssw0rd
+    username: YOUR_DATABASE_USERNAME
+    password: YOUR_DATABASE_PASSWORD
     druid:
       initial-size: 5
       min-idle: 5
@@ -37,7 +37,7 @@ mybatis-plus:
       logic-not-delete-value: 0
 
 jwt:
-  secret: library-system-secret-key-2024-secure-256-bits
+  secret: YOUR_JWT_SECRET_KEY_HERE
   expiration: 86400000
 
 logging:

@@ -1,0 +1,36 @@
+# IDE and Editor files
+.trae/
+.vscode/
+.idea/
+*.iml
+
+# Build outputs
+target/
+dist/
+node_modules/
+
+# Logs
+*.log
+logs/
+
+# Sensitive configuration files
+library-backend/src/main/resources/application.yml
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.swp
+*.swo
+*~
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Package manager locks (optional, uncomment if needed)
+# package-lock.json
+# yarn.lock
