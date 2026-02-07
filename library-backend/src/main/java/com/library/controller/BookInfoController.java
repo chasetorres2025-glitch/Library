@@ -3,10 +3,14 @@ package com.library.controller;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.library.entity.BookInfo;
+import com.library.entity.BookStock;
 import com.library.service.BookInfoService;
+import com.library.service.BookStockService;
 import com.library.vo.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/api/book")
@@ -14,6 +18,9 @@ public class BookInfoController {
 
     @Autowired
     private BookInfoService bookInfoService;
+
+    @Autowired
+    private BookStockService bookStockService;
 
     @GetMapping("/list")
     public Result<Page<BookInfo>> list(@RequestParam(defaultValue = "1") Integer current,
@@ -53,12 +60,26 @@ public class BookInfoController {
         if (bookInfoService.count(wrapper) > 0) {
             return Result.error("ISBN已存在");
         }
+        
+        book.setCreateTime(LocalDateTime.now());
+        book.setUpdateTime(LocalDateTime.now());
+        
         bookInfoService.save(book);
+        
+        BookStock stock = new BookStock();
+        stock.setBookId(book.getId());
+        stock.setTotalNum(0);
+        stock.setBorrowNum(0);
+        stock.setAvailableNum(0);
+        bookStockService.save(stock);
+        
         return Result.success("添加成功");
     }
 
     @PutMapping
     public Result<String> update(@RequestBody BookInfo book) {
+        // 设置更新时间
+        book.setUpdateTime(LocalDateTime.now());
         bookInfoService.updateById(book);
         return Result.success("更新成功");
     }

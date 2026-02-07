@@ -69,7 +69,12 @@ public class BookBorrowController {
         BookStock stock = bookStockService.getOne(stockWrapper);
 
         if (stock == null) {
-            return Result.error("图书库存不存在");
+            stock = new BookStock();
+            stock.setBookId(borrow.getBookId());
+            stock.setTotalNum(1);
+            stock.setBorrowNum(0);
+            stock.setAvailableNum(1);
+            bookStockService.save(stock);
         }
 
         if (stock.getAvailableNum() <= 0) {

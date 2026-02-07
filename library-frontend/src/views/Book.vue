@@ -249,6 +249,7 @@ const rules = {
   bookName: [{ required: true, message: '请输入图书名称', trigger: 'blur' }],
   author: [{ required: true, message: '请输入作者', trigger: 'blur' }],
   publisher: [{ required: true, message: '请输入出版社', trigger: 'blur' }],
+  publishTime: [{ required: true, message: '请选择出版时间', trigger: 'change' }],
   categoryId: [{ required: true, message: '请选择分类', trigger: 'change' }],
   price: [{ required: true, message: '请输入价格', trigger: 'blur' }]
 }

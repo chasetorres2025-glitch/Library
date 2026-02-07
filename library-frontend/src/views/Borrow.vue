@@ -131,11 +131,43 @@
         label-width="80px"
         class="data-form"
       >
-        <el-form-item label="用户ID" prop="userId">
-          <el-input v-model="form.userId" type="number" placeholder="请输入用户ID" />
+        <el-form-item label="用户" prop="userId">
+          <el-select 
+            v-model="form.userId" 
+            placeholder="请选择用户" 
+            filterable
+            remote
+            :remote-method="fetchUserList"
+            :loading="userLoading"
+            clearable
+            style="width: 100%"
+          >
+            <el-option 
+              v-for="user in userList" 
+              :key="user.id" 
+              :label="`${user.username} (${user.id})`"
+              :value="user.id"
+            />
+          </el-select>
         </el-form-item>
-        <el-form-item label="图书ID" prop="bookId">
-          <el-input v-model="form.bookId" type="number" placeholder="请输入图书ID" />
+        <el-form-item label="图书" prop="bookId">
+          <el-select 
+            v-model="form.bookId" 
+            placeholder="请选择图书" 
+            filterable
+            remote
+            :remote-method="fetchBookList"
+            :loading="bookLoading"
+            clearable
+            style="width: 100%"
+          >
+            <el-option 
+              v-for="book in bookList" 
+              :key="book.id" 
+              :label="`${book.bookName} (${book.id})`"
+              :value="book.id"
+            />
+          </el-select>
         </el-form-item>
       </el-form>
       <template #footer>
@@ -154,6 +186,8 @@
 import { ref, reactive, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { getBorrowList, borrowBook, returnBook } from '../api/borrow'
+import { getUserList } from '../api/user'
+import { getBookList } from '../api/book'
 import { useUserStore } from '../store/user'
 import { Plus, Search, Refresh, Check } from '@element-plus/icons-vue'
 
@@ -178,12 +212,17 @@ const form = reactive({
 })
 
 const rules = {
-  userId: [{ required: true, message: '请输入用户ID', trigger: 'blur' }],
-  bookId: [{ required: true, message: '请输入图书ID', trigger: 'blur' }]
+  userId: [{ required: true, message: '请选择用户', trigger: 'change' }],
+  bookId: [{ required: true, message: '请选择图书', trigger: 'change' }]
 }
 
 const tableData = ref([])
 const total = ref(0)
+
+const userList = ref([])
+const bookList = ref([])
+const userLoading = ref(false)
+const bookLoading = ref(false)
 
 const getStatusType = (status) => {
   const map = { 0: 'warning', 1: 'success', 2: 'danger' }
@@ -193,6 +232,30 @@ const getStatusType = (status) => {
 const getStatusText = (status) => {
   const map = { 0: '未还', 1: '已还', 2: '逾期' }
   return map[status] || '未知'
+}
+
+const fetchUserList = async (query) => {
+  userLoading.value = true
+  try {
+    const res = await getUserList({ current: 1, size: 100, keyword: query })
+    userList.value = res.data.records || []
+  } catch (error) {
+    console.error('获取用户列表失败:', error)
+  } finally {
+    userLoading.value = false
+  }
+}
+
+const fetchBookList = async (query) => {
+  bookLoading.value = true
+  try {
+    const res = await getBookList({ current: 1, size: 100, keyword: query })
+    bookList.value = res.data.records || []
+  } catch (error) {
+    console.error('获取图书列表失败:', error)
+  } finally {
+    bookLoading.value = false
+  }
 }
 
 const handleQuery = async () => {
@@ -215,11 +278,13 @@ const handleReset = () => {
   handleQuery()
 }
 
-const handleBorrow = () => {
+const handleBorrow = async () => {
   Object.assign(form, {
     userId: '',
     bookId: ''
   })
+  await fetchUserList('')
+  await fetchBookList('')
   dialogVisible.value = true
 }
 

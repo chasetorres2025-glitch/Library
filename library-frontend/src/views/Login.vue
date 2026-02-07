@@ -52,9 +52,6 @@
       </el-form>
       
       <div class="login-footer">
-        <div class="tips">
-          <p>默认管理员账号：admin / 123456</p>
-        </div>
         <div class="login-links">
           <a href="#" class="forgot-password">忘记密码？</a>
           <a href="#" class="help">登录帮助</a>
@@ -189,6 +186,9 @@ const handleLogin = async () => {
 
 .logo-container {
   margin-bottom: var(--spacing-medium);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .logo-icon {
@@ -197,6 +197,30 @@ const handleLogin = async () => {
   padding: var(--spacing-medium);
   border-radius: 50%;
   box-shadow: var(--shadow-base);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  vertical-align: middle;
+}
+
+.logo-icon svg {
+  display: block;
+  vertical-align: middle;
+}
+
+/* 移除标题下方的短横线 */
+.login-header h2::after,
+.login-header h2::before {
+  display: none !important;
+  content: none !important;
+  border-bottom: none !important;
+}
+
+/* 移除所有可能的下划线 */
+.login-header * {
+  text-decoration: none !important;
+  border-bottom: none !important;
 }
 
 .login-card h2 {
@@ -204,6 +228,13 @@ const handleLogin = async () => {
   font-size: var(--font-size-extra-large);
   font-weight: var(--font-weight-primary);
   margin-bottom: var(--spacing-small);
+  border-bottom: none;
+  text-decoration: none;
+}
+
+.login-header h2 {
+  border-bottom: none;
+  text-decoration: none;
 }
 
 .login-subtitle {

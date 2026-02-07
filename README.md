@@ -9,6 +9,7 @@
 - [系统架构](#系统架构)
 - [数据库设计](#数据库设计)
 - [功能模块](#功能模块)
+- [系统界面](#系统界面)
 - [项目结构](#项目结构)
 - [快速开始](#快速开始)
 - [API 接口](#api-接口)
@@ -92,82 +93,101 @@ Vue 前端
 #### 1. 用户表（sys_user）
 存储系统用户信息，区分管理员和读者角色。
 
-**主要字段：**
-- `id` - 主键 ID
-- `username` - 用户名（唯一）
-- `password` - 密码（BCrypt 加密）
-- `real_name` - 真实姓名
-- `phone` - 手机号（唯一）
-- `email` - 邮箱
-- `role_id` - 角色 ID（外键）
-- `status` - 状态（0-禁用，1-正常）
+| 字段名 | 类型 | 说明 | 约束 |
+|--------|------|------|------|
+| id | BIGINT | 主键 ID | PRIMARY KEY, AUTO_INCREMENT |
+| username | VARCHAR(50) | 用户名 | UNIQUE, NOT NULL |
+| password | VARCHAR(100) | 密码（BCrypt 加密） | NOT NULL |
+| real_name | VARCHAR(50) | 真实姓名 | - |
+| phone | VARCHAR(20) | 手机号 | UNIQUE |
+| email | VARCHAR(100) | 邮箱 | - |
+| role_id | BIGINT | 角色 ID（外键） | FOREIGN KEY → sys_role.id |
+| status | TINYINT | 状态（0-禁用，1-正常） | DEFAULT 1 |
+| create_time | DATETIME | 创建时间 | DEFAULT CURRENT_TIMESTAMP |
+| update_time | DATETIME | 更新时间 | DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP |
 
 #### 2. 角色表（sys_role）
 存储角色信息，如管理员、普通读者。
 
-**主要字段：**
-- `id` - 主键 ID
-- `role_name` - 角色名称（如：管理员、读者）
-- `role_code` - 角色编码（如：ADMIN、READER）
-- `description` - 角色描述
+| 字段名 | 类型 | 说明 | 约束 |
+|--------|------|------|------|
+| id | BIGINT | 主键 ID | PRIMARY KEY, AUTO_INCREMENT |
+| role_name | VARCHAR(50) | 角色名称（如：管理员、读者） | NOT NULL |
+| role_code | VARCHAR(20) | 角色编码（如：ADMIN、READER） | UNIQUE, NOT NULL |
+| description | VARCHAR(200) | 角色描述 | - |
+| create_time | DATETIME | 创建时间 | DEFAULT CURRENT_TIMESTAMP |
+| update_time | DATETIME | 更新时间 | DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP |
 
 #### 3. 图书分类表（book_category）
 对图书进行分类管理，支持多级分类。
 
-**主要字段：**
-- `id` - 主键 ID
-- `category_name` - 分类名称
-- `parent_id` - 父分类 ID（支持多级分类）
-- `sort` - 排序权重
+| 字段名 | 类型 | 说明 | 约束 |
+|--------|------|------|------|
+| id | BIGINT | 主键 ID | PRIMARY KEY, AUTO_INCREMENT |
+| category_name | VARCHAR(50) | 分类名称 | NOT NULL |
+| parent_id | BIGINT | 父分类 ID（支持多级分类） | FOREIGN KEY → book_category.id, DEFAULT 0 |
+| sort | INT | 排序权重 | DEFAULT 0 |
+| create_time | DATETIME | 创建时间 | DEFAULT CURRENT_TIMESTAMP |
+| update_time | DATETIME | 更新时间 | DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP |
 
 #### 4. 图书信息表（book_info）
 核心表，存储图书基本信息。
 
-**主要字段：**
-- `id` - 主键 ID
-- `book_isbn` - ISBN 编号（唯一）
-- `book_name` - 图书名称
-- `author` - 作者
-- `publisher` - 出版社
-- `publish_time` - 出版时间
-- `category_id` - 分类 ID（外键）
-- `price` - 图书定价
-- `cover_url` - 封面图片 URL
-- `description` - 图书简介
+| 字段名 | 类型 | 说明 | 约束 |
+|--------|------|------|------|
+| id | BIGINT | 主键 ID | PRIMARY KEY, AUTO_INCREMENT |
+| book_isbn | VARCHAR(20) | ISBN 编号 | UNIQUE, NOT NULL |
+| book_name | VARCHAR(100) | 图书名称 | NOT NULL |
+| author | VARCHAR(50) | 作者 | - |
+| publisher | VARCHAR(100) | 出版社 | - |
+| publish_time | DATE | 出版时间 | - |
+| category_id | BIGINT | 分类 ID | FOREIGN KEY → book_category.id |
+| price | DECIMAL(10,2) | 图书定价 | - |
+| cover_url | VARCHAR(500) | 封面图片 URL | - |
+| description | TEXT | 图书简介 | - |
+| create_time | DATETIME | 创建时间 | DEFAULT CURRENT_TIMESTAMP |
+| update_time | DATETIME | 更新时间 | DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP |
 
 #### 5. 图书库存表（book_stock）
 单独存储库存，避免和图书基本信息耦合。
 
-**主要字段：**
-- `id` - 主键 ID
-- `book_id` - 图书 ID（外键）
-- `total_num` - 总库存数量
-- `borrow_num` - 已借出数量
-- `available_num` - 可借数量
+| 字段名 | 类型 | 说明 | 约束 |
+|--------|------|------|------|
+| id | BIGINT | 主键 ID | PRIMARY KEY, AUTO_INCREMENT |
+| book_id | BIGINT | 图书 ID | FOREIGN KEY → book_info.id, UNIQUE, NOT NULL |
+| total_num | INT | 总库存数量 | DEFAULT 0 |
+| borrow_num | INT | 已借出数量 | DEFAULT 0 |
+| available_num | INT | 可借数量 | DEFAULT 0 |
+| create_time | DATETIME | 创建时间 | DEFAULT CURRENT_TIMESTAMP |
+| update_time | DATETIME | 更新时间 | DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP |
 
 #### 6. 图书借阅表（book_borrow）
 存储借阅记录，核心业务表。
 
-**主要字段：**
-- `id` - 主键 ID
-- `book_id` - 图书 ID（外键）
-- `user_id` - 借阅用户 ID（外键）
-- `borrow_time` - 借阅时间
-- `due_time` - 应归还时间
-- `return_time` - 实际归还时间
-- `status` - 状态（0-未还，1-已还，2-逾期）
-- `operator_id` - 操作人 ID（管理员）
+| 字段名 | 类型 | 说明 | 约束 |
+|--------|------|------|------|
+| id | BIGINT | 主键 ID | PRIMARY KEY, AUTO_INCREMENT |
+| book_id | BIGINT | 图书 ID | FOREIGN KEY → book_info.id, NOT NULL |
+| user_id | BIGINT | 借阅用户 ID | FOREIGN KEY → sys_user.id, NOT NULL |
+| borrow_time | DATETIME | 借阅时间 | DEFAULT CURRENT_TIMESTAMP |
+| due_time | DATETIME | 应归还时间 | NOT NULL |
+| return_time | DATETIME | 实际归还时间 | - |
+| status | TINYINT | 状态（0-未还，1-已还，2-逾期） | DEFAULT 0 |
+| operator_id | BIGINT | 操作人 ID（管理员） | FOREIGN KEY → sys_user.id |
+| create_time | DATETIME | 创建时间 | DEFAULT CURRENT_TIMESTAMP |
+| update_time | DATETIME | 更新时间 | DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP |
 
 #### 7. 操作日志表（sys_log）
 记录系统操作日志，用于审计和问题排查。
 
-**主要字段：**
-- `id` - 主键 ID
-- `user_id` - 操作人 ID
-- `operation` - 操作类型
-- `content` - 操作内容
-- `ip` - 操作 IP
-- `create_time` - 操作时间
+| 字段名 | 类型 | 说明 | 约束 |
+|--------|------|------|------|
+| id | BIGINT | 主键 ID | PRIMARY KEY, AUTO_INCREMENT |
+| user_id | BIGINT | 操作人 ID | FOREIGN KEY → sys_user.id |
+| operation | VARCHAR(50) | 操作类型 | - |
+| content | TEXT | 操作内容 | - |
+| ip | VARCHAR(50) | 操作 IP | - |
+| create_time | DATETIME | 操作时间 | DEFAULT CURRENT_TIMESTAMP |
 
 ## 功能模块
 
@@ -204,6 +224,127 @@ Vue 前端
 | 登录/注册 | 读者注册、账号密码登录、记住密码、忘记密码（邮箱/手机验证） |
 | 图书浏览 | 首页展示热门图书、按分类浏览图书、图书详情页（查看简介/库存） |
 | 个人中心 | 查看个人信息、修改密码、查看我的借阅记录 |
+
+## 系统界面
+
+### 系统截图
+
+#### 1. 登录页面
+![登录页面](UI示例图/登录.png)
+
+#### 2. 管理主页
+![管理主页](UI示例图/管理主页.png)
+
+#### 3. 用户管理
+![用户管理](UI示例图/用户管理.png)
+
+#### 4. 图书分类
+![图书分类](UI示例图/图书分类.png)
+
+#### 5. 图书管理
+![图书管理](UI示例图/图书管理.png)
+
+#### 6. 借阅管理
+![借阅管理](UI示例图/借阅管理.png)
+
+### 数据库 ER 图
+
+```mermaid
+erDiagram
+    sys_role ||--o{ sys_user : "拥有"
+    sys_user ||--o{ book_borrow : "借阅"
+    sys_user ||--o{ sys_log : "操作"
+    book_category ||--o{ book_info : "属于"
+    book_info ||--|| book_stock : "对应"
+    book_info ||--o{ book_borrow : "被借阅"
+
+    sys_role {
+        bigint id PK
+        varchar role_name
+        varchar role_code
+        varchar description
+        datetime create_time
+        datetime update_time
+    }
+
+    sys_user {
+        bigint id PK
+        varchar username UK
+        varchar password
+        varchar real_name
+        varchar phone UK
+        varchar email
+        bigint role_id FK
+        tinyint status
+        datetime create_time
+        datetime update_time
+    }
+
+    book_category {
+        bigint id PK
+        varchar category_name
+        bigint parent_id FK
+        int sort
+        datetime create_time
+        datetime update_time
+    }
+
+    book_info {
+        bigint id PK
+        varchar book_isbn UK
+        varchar book_name
+        varchar author
+        varchar publisher
+        date publish_time
+        bigint category_id FK
+        decimal price
+        varchar cover_url
+        text description
+        datetime create_time
+        datetime update_time
+    }
+
+    book_stock {
+        bigint id PK
+        bigint book_id FK UK
+        int total_num
+        int borrow_num
+        int available_num
+        datetime create_time
+        datetime update_time
+    }
+
+    book_borrow {
+        bigint id PK
+        bigint book_id FK
+        bigint user_id FK
+        datetime borrow_time
+        datetime due_time
+        datetime return_time
+        tinyint status
+        bigint operator_id FK
+        datetime create_time
+        datetime update_time
+    }
+
+    sys_log {
+        bigint id PK
+        bigint user_id FK
+        varchar operation
+        text content
+        varchar ip
+        datetime create_time
+    }
+```
+
+**ER 图说明：**
+- **sys_role（角色表）**：与 sys_user 一对多关系，一个角色可以分配给多个用户
+- **sys_user（用户表）**：与 book_borrow 一对多关系，一个用户可以有多条借阅记录；与 sys_log 一对多关系，记录用户操作日志
+- **book_category（图书分类表）**：与 book_info 一对多关系，一个分类下可以有多本图书；支持自关联实现多级分类
+- **book_info（图书信息表）**：与 book_stock 一对一关系，每本书对应一条库存记录；与 book_borrow 一对多关系，一本书可以被多次借阅
+- **book_stock（图书库存表）**：与 book_info 一对一关系，单独存储库存信息
+- **book_borrow（借阅记录表）**：关联图书和用户，记录借阅详情
+- **sys_log（操作日志表）**：记录系统操作，用于审计和问题排查
 
 ## 项目结构
 
