@@ -33,6 +33,12 @@ public class BookInfo {
 
     private String description;
 
+    private String difficultyLevel;
+
+    private String aiTags;
+
+    private String embeddingVector;
+
     private LocalDateTime createTime;
 
     private LocalDateTime updateTime;

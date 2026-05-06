@@ -29,7 +29,38 @@
         </div>
       </el-col>
     </el-row>
-    
+
+    <el-row :gutter="20" class="recommend-row" v-if="userStore.isLoggedIn">
+      <el-col :span="24">
+        <el-card class="recommend-card">
+          <template #header>
+            <div class="card-header">
+              <h3>智能推荐</h3>
+              <el-button type="primary" size="small" @click="router.push('/ai-chat')">
+                <el-icon><ChatDotRound /></el-icon>
+                智能助手
+              </el-button>
+            </div>
+          </template>
+          <RecommendSection
+            title="为您推荐"
+            :books="personalRecommend"
+            @more="router.push('/book')"
+          />
+          <RecommendSection
+            title="本周热门"
+            :books="popularBooks"
+            @more="router.push('/book')"
+          />
+          <RecommendSection
+            title="新书上架"
+            :books="recentBooks"
+            @more="router.push('/book')"
+          />
+        </el-card>
+      </el-col>
+    </el-row>
+
     <el-row :gutter="20" class="content-row">
       <el-col :xs="24" :lg="16">
         <el-card class="chart-card">
@@ -196,8 +227,11 @@ import {
   Plus,
   Search,
   Setting,
-  Picture
+  Picture,
+  ChatDotRound
 } from '@element-plus/icons-vue'
+import RecommendSection from '../components/RecommendSection.vue'
+import { getPersonalRecommend, getPopularBooks, getRecentBooks } from '../api/recommend'
 
 const router = useRouter()
 const userStore = useUserStore()
@@ -253,6 +287,8 @@ const quickActions = [
 const recentBooks = ref([])
 const notices = ref([])
 const borrowTrend = ref({})
+const personalRecommend = ref([])
+const popularBooks = ref([])
 
 const handleStatClick = (stat) => {
   if (stat.path) {
@@ -295,7 +331,7 @@ const loadStatistics = async () => {
     recentBooks.value = data.recentBooks || []
 
     // 更新公告
-    notices.value = [data.notices] || []
+    notices.value = data.notices || []
 
     loading.value = false
   } catch (error) {
@@ -304,8 +340,26 @@ const loadStatistics = async () => {
   }
 }
 
+const loadRecommendations = async () => {
+  try {
+    const [personalRes, popularRes, recentRes] = await Promise.all([
+      getPersonalRecommend(4),
+      getPopularBooks(4),
+      getRecentBooks(4)
+    ])
+    personalRecommend.value = personalRes.data || []
+    popularBooks.value = popularRes.data || []
+    recentBooks.value = recentRes.data || []
+  } catch (error) {
+    console.error('加载推荐数据失败:', error)
+  }
+}
+
 onMounted(() => {
   loadStatistics()
+  if (userStore.isLoggedIn) {
+    loadRecommendations()
+  }
 })
 </script>
 

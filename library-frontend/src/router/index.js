@@ -50,6 +50,24 @@ const routes = [
         name: 'MyBorrow',
         component: () => import('../views/MyBorrow.vue'),
         meta: { title: '我的借阅' }
+      },
+      {
+        path: '/ai-chat',
+        name: 'AiChat',
+        component: () => import('../views/AiChat.vue'),
+        meta: { title: '智能助手' }
+      },
+      {
+        path: '/profile',
+        name: 'UserProfile',
+        component: () => import('../views/UserProfile.vue'),
+        meta: { title: '个人中心' }
+      },
+      {
+        path: '/book-tag',
+        name: 'BookTagManage',
+        component: () => import('../views/BookTagManage.vue'),
+        meta: { title: '标签管理', requiresAdmin: true }
       }
     ]
   }

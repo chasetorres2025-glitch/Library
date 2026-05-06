@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.SecureRandom;
+
 @RestController
 @RequestMapping("/api/user")
 public class SysUserController {
@@ -69,9 +71,20 @@ public class SysUserController {
     @PutMapping("/reset-password/{id}")
     public Result<String> resetPassword(@PathVariable Long id) {
         SysUser user = sysUserService.getById(id);
-        user.setPassword(passwordEncoder.encode("123456"));
+        String tempPassword = generateTempPassword();
+        user.setPassword(passwordEncoder.encode(tempPassword));
         sysUserService.updateById(user);
-        return Result.success("密码重置成功，新密码为：123456");
+        return Result.success("密码重置成功，新密码为：" + tempPassword);
+    }
+
+    private String generateTempPassword() {
+        String chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789@#$%";
+        SecureRandom random = new SecureRandom();
+        StringBuilder sb = new StringBuilder(10);
+        for (int i = 0; i < 10; i++) {
+            sb.append(chars.charAt(random.nextInt(chars.length())));
+        }
+        return sb.toString();
     }
 
 }

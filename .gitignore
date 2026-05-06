@@ -16,6 +16,9 @@ logs/
 # Sensitive configuration files
 library-backend/src/main/resources/application.yml
 
+# Tool-specific directories
+.comate/
+
 # OS files
 .DS_Store
 Thumbs.db

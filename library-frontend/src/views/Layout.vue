@@ -52,6 +52,27 @@
             <span>我的借阅</span>
           </template>
         </el-menu-item>
+
+        <el-menu-item index="/ai-chat" class="menu-item">
+          <el-icon><ChatDotRound /></el-icon>
+          <template #title>
+            <span>智能助手</span>
+          </template>
+        </el-menu-item>
+
+        <el-menu-item index="/profile" class="menu-item">
+          <el-icon><UserFilled /></el-icon>
+          <template #title>
+            <span>个人中心</span>
+          </template>
+        </el-menu-item>
+
+        <el-menu-item v-if="userStore.isAdmin" index="/book-tag" class="menu-item">
+          <el-icon><CollectionTag /></el-icon>
+          <template #title>
+            <span>标签管理</span>
+          </template>
+        </el-menu-item>
       </el-menu>
     </el-aside>
     
@@ -122,18 +143,21 @@ import { ref, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useUserStore } from '../store/user'
 import { ElMessageBox } from 'element-plus'
-import { 
-  HomeFilled, 
-  User, 
-  Menu, 
-  Reading, 
-  Document, 
+import {
+  HomeFilled,
+  User,
+  Menu,
+  Reading,
+  Document,
   Notebook,
   Fold,
   Expand,
   ArrowDown,
   Setting,
-  SwitchButton
+  SwitchButton,
+  ChatDotRound,
+  UserFilled,
+  CollectionTag
 } from '@element-plus/icons-vue'
 
 const route = useRoute()
@@ -150,7 +174,10 @@ const currentRouteName = computed(() => {
     '/category': '图书分类',
     '/book': '图书管理',
     '/borrow': '借阅管理',
-    '/my-borrow': '我的借阅'
+    '/my-borrow': '我的借阅',
+    '/ai-chat': '智能助手',
+    '/profile': '个人中心',
+    '/book-tag': '标签管理'
   }
   return routeMap[route.path] || ''
 })
